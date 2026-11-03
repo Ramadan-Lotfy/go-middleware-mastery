@@ -40,3 +40,33 @@ func TestHealthHandler(t *testing.T) {
         t.Error("expected application/json content type")
     }
 }
+
+
+func TestAboutHandler(t *testing.T) {
+    req := httptest.NewRequest(http.MethodGet, "/about", nil)
+    recorder := httptest.NewRecorder()
+
+    AboutHandler(recorder, req)
+
+    if recorder.Code != http.StatusOK {
+        t.Errorf("expected status 200, got %d", recorder.Code)
+    }
+
+    expected := "Learning Go Middleware\n"
+
+    if recorder.Body.String() != expected {
+        t.Errorf("expected %q, got %q",
+            expected, recorder.Body.String())
+    }
+}
+
+func TestNotFoundHandler(t *testing.T) {
+    req := httptest.NewRequest(http.MethodGet, "/not-found", nil)
+    recorder := httptest.NewRecorder()
+
+    NotFoundHandler(recorder, req)
+
+    if recorder.Code != http.StatusNotFound {
+        t.Errorf("expected status 404, got %d", recorder.Code)
+    }
+}
