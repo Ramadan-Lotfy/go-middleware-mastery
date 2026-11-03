@@ -5,6 +5,7 @@ import (
     "net/http"
 
     "github.com/Ramadan-Lotfy/go-middleware-mastery/fundamentals"
+	"github.com/Ramadan-Lotfy/go-middleware-mastery/logging"
 )
 
 func main() {
@@ -16,11 +17,13 @@ func main() {
     mux.HandleFunc("GET /slow", fundamentals.SlowHandler)
     mux.HandleFunc("GET /not-found", fundamentals.NotFoundHandler)
 
-    addr := ":8080"
+    handler := logging.LoggingMiddleware(mux)
 
-    log.Printf("Server listening on %s", addr)
+	addr := ":8080"
 
-    if err := http.ListenAndServe(addr, mux); err != nil {
-        log.Fatal(err)
-    }
+	log.Printf("Server listening on %s", addr)
+
+	if err := http.ListenAndServe(addr, handler); err != nil {
+		log.Fatal(err)
+	}
 }
