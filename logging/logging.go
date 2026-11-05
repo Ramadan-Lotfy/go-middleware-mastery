@@ -1,30 +1,29 @@
 package logging
 
 import (
-    "log"
-    "net/http"
-    "time"
+	"log"
+	"net/http"
+	"time"
 )
 
 func LoggingMiddleware(next http.Handler) http.Handler {
-    return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-        start := time.Now()
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		start := time.Now()
 
-        log.Printf(
-            "--> %s %s",
-            r.Method,
-            r.URL.Path,
-        )
+		rw := newResponseWriter(w)
 
-        next.ServeHTTP(w, r)
+		log.Printf("--> %s %s", r.Method, r.URL.Path)
 
-        duration := time.Since(start)
+		next.ServeHTTP(rw, r)
 
-        log.Printf(
-            "<-- %s %s completed in %v",
-            r.Method,
-            r.URL.Path,
-            duration,
-        )
-    })
+		duration := time.Since(start)
+
+		log.Printf(
+			"<-- %s %s status=%d duration=%v",
+			r.Method,
+			r.URL.Path,
+			rw.statusCode,
+			duration,
+		)
+	})
 }
