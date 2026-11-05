@@ -1,23 +1,27 @@
 package main
 
 import (
-    "log"
-    "net/http"
+	"log"
+	"net/http"
 
-    "github.com/Ramadan-Lotfy/go-middleware-mastery/fundamentals"
+	"github.com/Ramadan-Lotfy/go-middleware-mastery/fundamentals"
 	"github.com/Ramadan-Lotfy/go-middleware-mastery/logging"
+	"github.com/Ramadan-Lotfy/go-middleware-mastery/middleware-chain"
 )
 
 func main() {
-    mux := http.NewServeMux()
+	mux := http.NewServeMux()
 
-    mux.HandleFunc("GET /hello", fundamentals.HelloHandler)
-    mux.HandleFunc("GET /about", fundamentals.AboutHandler)
-    mux.HandleFunc("GET /health", fundamentals.HealthHandler)
-    mux.HandleFunc("GET /slow", fundamentals.SlowHandler)
-    mux.HandleFunc("GET /not-found", fundamentals.NotFoundHandler)
+	mux.HandleFunc("GET /hello", fundamentals.HelloHandler)
+	mux.HandleFunc("GET /about", fundamentals.AboutHandler)
+	mux.HandleFunc("GET /health", fundamentals.HealthHandler)
+	mux.HandleFunc("GET /slow", fundamentals.SlowHandler)
+	mux.HandleFunc("GET /not-found", fundamentals.NotFoundHandler)
 
-    handler := logging.LoggingMiddleware(mux)
+	handler := middlewarechain.Chain(
+		mux,
+		logging.LoggingMiddleware,
+	)
 
 	addr := ":8080"
 
