@@ -8,6 +8,7 @@ import (
 	"github.com/Ramadan-Lotfy/go-middleware-mastery/logging"
 	"github.com/Ramadan-Lotfy/go-middleware-mastery/middleware-chain"
 	"github.com/Ramadan-Lotfy/go-middleware-mastery/recovery"
+	"github.com/Ramadan-Lotfy/go-middleware-mastery/request-id"
 )
 
 func main() {
@@ -22,6 +23,7 @@ func main() {
 
 	handler := middlewarechain.Chain(
 		mux,
+		requestid.RequestIDMiddleware,
 		logging.LoggingMiddleware,
 		recovery.RecoveryMiddleware,
 	)
