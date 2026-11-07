@@ -7,6 +7,7 @@ import (
 	"github.com/Ramadan-Lotfy/go-middleware-mastery/fundamentals"
 	"github.com/Ramadan-Lotfy/go-middleware-mastery/logging"
 	"github.com/Ramadan-Lotfy/go-middleware-mastery/middleware-chain"
+	"github.com/Ramadan-Lotfy/go-middleware-mastery/recovery"
 )
 
 func main() {
@@ -17,10 +18,12 @@ func main() {
 	mux.HandleFunc("GET /health", fundamentals.HealthHandler)
 	mux.HandleFunc("GET /slow", fundamentals.SlowHandler)
 	mux.HandleFunc("GET /not-found", fundamentals.NotFoundHandler)
+	// mux.HandleFunc("GET /panic", fundamentals.PanicHandler)
 
 	handler := middlewarechain.Chain(
 		mux,
 		logging.LoggingMiddleware,
+		recovery.RecoveryMiddleware,
 	)
 
 	addr := ":8080"
